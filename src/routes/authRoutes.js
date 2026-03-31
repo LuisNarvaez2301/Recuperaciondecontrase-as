@@ -1,16 +1,30 @@
 const { Router } = require('express');
+const rateLimit = require('express-rate-limit');
 const { forgotPassword, resetPassword } = require('../controllers/authController');
 
 const router = Router();
 
+// Configuración de Rate Limit para recuperación de contraseña
+// 5 solicitudes cada 15 minutos por IP
+const recoveryRateLimit = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    max: 5, 
+    message: {
+        message: 'Demasiadas solicitudes de recuperación desde esta IP. Intente nuevamente en 15 minutos.'
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
 /**
  * @swagger
- * /auth/forgot-password:
+ * /api/auth/recuperar-password:
  *   post:
  *     summary: Solicitar recuperación de contraseña
  *     description: >
  *       Envía un correo electrónico con un enlace de recuperación de contraseña
  *       al usuario registrado con el correo proporcionado.
+ *       Límite: 5 solicitudes cada 15 minutos por IP.
  *     tags:
  *       - Autenticación
  *     requestBody:
@@ -58,6 +72,8 @@ const router = Router();
  *                 message:
  *                   type: string
  *                   example: No se encontró un usuario con ese correo electrónico.
+ *       429:
+ *         description: Demasiadas solicitudes (Rate Limit)
  *       500:
  *         description: Error interno del servidor
  *         content:
@@ -69,15 +85,15 @@ const router = Router();
  *                   type: string
  *                   example: Error interno del servidor.
  */
-router.post('/forgot-password', forgotPassword);
+router.post('/recuperar-password', recoveryRateLimit, forgotPassword);
 
 /**
  * @swagger
- * /auth/reset-password:
+ * /api/auth/reset-password:
  *   post:
  *     summary: Restablecer contraseña
  *     description: >
- *       Restablece la contraseña del usuario utilizando el token de recuperación
+ *       Restablecer la contraseña del usuario utilizando el token de recuperación
  *       recibido por correo electrónico.
  *     tags:
  *       - Autenticación

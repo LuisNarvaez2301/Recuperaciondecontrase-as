@@ -172,6 +172,12 @@ const resetPassword = async (token, nuevaPassword) => {
             [registroValido.id_token]
         );
 
+        // 7. Registrar en log_auditoria (HU-AUTH-03)
+        await client.query(
+            'INSERT INTO log_auditoria (id_usuario, accion, descripcion, fecha) VALUES ($1, $2, $3, NOW())',
+            [registroValido.id_usuario, 'RESTABLECER_PASSWORD', 'Cambio exitoso de contraseña mediante recuperación']
+        );
+
         await client.query('COMMIT');
         return { message: 'La contraseña se ha restablecido exitosamente.' };
     } catch (err) {

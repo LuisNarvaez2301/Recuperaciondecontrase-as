@@ -48,7 +48,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // ============================================
 // Rutas
 // ============================================
-app.use('/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 
 // Ruta de salud
 app.get('/health', (req, res) => {
