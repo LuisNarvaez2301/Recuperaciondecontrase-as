@@ -1,4 +1,4 @@
-const { forgotPassword, resetPassword } = require('../services/authService');
+const { forgotPassword, resetPassword } = require('../services/auth');
 
 const forgotPasswordController = async (req, res) => {
     try {

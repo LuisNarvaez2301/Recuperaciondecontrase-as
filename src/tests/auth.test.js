@@ -6,7 +6,7 @@ jest.mock('../config/db', () => ({
 const pool = require('../config/db');
 const request = require('supertest');
 const express = require('express');
-const authRoutes = require('../routes/authRoutes');
+const authRoutes = require('../routes/auth');
 
 // Mock de nodemailer
 jest.mock('nodemailer', () => ({
